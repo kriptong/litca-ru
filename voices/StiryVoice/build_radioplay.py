@@ -211,21 +211,48 @@ def piece_text_seg(seg, pieces):
     return ' '.join(piece_text(ref, pieces) for ref in seg['src'])
 
 
+def resolve_clip(workdir, seg_id, tmp):
+    """Find a voiced piece (WAV or FLAC/MP3/Ogg), decoding it to WAV when needed."""
+    for ext in ('.wav', '.flac', '.mp3', '.ogg'):
+        path = Path(workdir) / f'{seg_id}{ext}'
+        if not path.exists():
+            continue
+        if ext == '.wav':
+            return path
+        dst = tmp / f'dec_{seg_id}.wav'
+        ffmpeg(['-i', str(path), '-ac', '1', '-ar', str(SR), '-c:a', 'pcm_s16le', str(dst)])
+        return dst
+    sys.exit(f'missing piece {seg_id} in {workdir}')
+
+
+def match_level(data, target_rms_db=-19.0, floor_db=-50.0):
+    """Bring a piece to a consistent working level before the effect chain.
+
+    The speech engine occasionally returns a piece much quieter than the rest
+    (different internal loudness handling); this flattens those differences.
+    """
+    active = np.abs(data) > 10 ** (floor_db / 20)
+    if not active.any():
+        return data
+    rms = float(np.sqrt(np.mean(data[active] ** 2)))
+    gain_db = float(np.clip(target_rms_db - 20 * np.log10(rms + 1e-9), -12.0, 30.0))
+    return data * 10 ** (gain_db / 20)
+
+
 def assemble(cfg, pieces, workdir, tmpdir):
     segs = cfg['segments']
     tmp = Path(tmpdir)
     tmp.mkdir(parents=True, exist_ok=True)
     clips = []
     for i, seg in enumerate(segs):
-        raw = Path(workdir) / f'{seg["id"]}.wav'
-        if not raw.exists():
-            sys.exit(f'missing {raw}')
+        raw = resolve_clip(workdir, seg['id'], tmp)
         data = trim(read_wav(raw))
-        if seg.get('gain_db'):
-            data = data * 10 ** (seg['gain_db'] / 20)   # input trim before the effect
+        data = match_level(data, cfg.get('piece_target_rms_db', -19.0))
         chain = cfg['effects'].get(seg['kind'])
         if chain:
             data = apply_effect(data, chain, f'{i:02d}', tmp)
+        if seg.get('gain_db'):
+            data = data * 10 ** (seg['gain_db'] / 20)   # artistic offset after the effect
         data = boost_header_pause(data, piece_text_seg(seg, pieces), None, cfg['pause_boost'])
         clips.append(data)
 

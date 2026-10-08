@@ -101,6 +101,21 @@
       "dur": 2.8,
       "bed": "none",
       "note": "уход в тишину"
+    },
+    "rp11->rp12": {
+      "dur": 0.8,
+      "bed": "noise",
+      "bed_db": -46
+    },
+    "rp13->rp14": {
+      "dur": 0.6,
+      "bed": "noise",
+      "bed_db": -46
+    },
+    "rp15->rp16": {
+      "dur": 0.9,
+      "bed": "noise",
+      "bed_db": -46
     }
   },
   "segments": [
@@ -134,7 +149,7 @@
       "src": [
         "15-18"
       ],
-      "gain_db": 1,
+      "gain_db": 4,
       "pause_after": 0.8
     },
     {
@@ -151,7 +166,7 @@
       "src": [
         "20"
       ],
-      "gain_db": 1,
+      "gain_db": 4,
       "pause_after": 1.6
     },
     {
@@ -192,7 +207,7 @@
       "src": [
         "49"
       ],
-      "gain_db": 1,
+      "gain_db": 4,
       "pause_after": 0.8
     },
     {
@@ -209,7 +224,7 @@
       "src": [
         "51"
       ],
-      "gain_db": 1,
+      "gain_db": 4,
       "pause_after": 0.9
     },
     {
@@ -227,7 +242,7 @@
       "src": [
         "53.1"
       ],
-      "gain_db": 1,
+      "gain_db": 4,
       "pause_after": 1.2
     },
     {
@@ -244,7 +259,7 @@
       "src": [
         "55-60"
       ],
-      "gain_db": 1,
+      "gain_db": 4,
       "pause_after": 1.8
     },
     {
@@ -262,7 +277,7 @@
       "src": [
         "65.1"
       ],
-      "gain_db": 0,
+      "gain_db": 2,
       "pause_after": 1.3
     },
     {
@@ -287,7 +302,7 @@
       "src": [
         "76"
       ],
-      "gain_db": 0,
+      "gain_db": 2,
       "pause_after": 0.9
     },
     {
@@ -304,7 +319,7 @@
       "src": [
         "78"
       ],
-      "gain_db": 0,
+      "gain_db": 2,
       "pause_after": 1.2
     },
     {
@@ -322,7 +337,7 @@
       "src": [
         "81.1"
       ],
-      "gain_db": 0,
+      "gain_db": 2,
       "pause_after": 1.3
     },
     {
@@ -352,5 +367,6 @@
     "after_header_s": 0.45,
     "min_silence_s": 0.12,
     "silence_db": -45
-  }
+  },
+  "piece_target_rms_db": -19.0
 }
