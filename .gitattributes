@@ -1,0 +1,17 @@
+# Бинарные и «не трогать при слиянии» файлы
+*.png binary
+*.jpg binary
+*.pdf binary
+*.mp3 binary
+
+# Windows-скрипты: в репозитории они лежат с CRLF, иначе PowerShell 5.1
+# и cmd.exe спотыкаются на переводе строк.
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Документация и код — LF
+*.md text eol=lf
+*.json text eol=lf
+*.go text eol=lf
+*.py text eol=lf
